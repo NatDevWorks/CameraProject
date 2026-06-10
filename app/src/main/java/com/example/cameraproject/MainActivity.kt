@@ -1,7 +1,9 @@
 package com.example.cameraproject
 
 import android.Manifest
+import android.content.ActivityNotFoundException
 import android.content.ContentValues
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
@@ -37,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var flashlightButton: Button
     private lateinit var switchButton: Button
     private lateinit var filterButton: Button
+    private lateinit var galleryButton: Button
 
     private lateinit var filterOverlay: View
 
@@ -66,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         switchButton = findViewById(R.id.switchButton)
 
         filterButton = findViewById(R.id.filterButton)
+        galleryButton = findViewById(R.id.galleryButton)
         filterOverlay = findViewById(R.id.filterOverlay)
 
         if (hasPermissions()) {
@@ -82,6 +86,11 @@ class MainActivity : AppCompatActivity() {
                 ),
                 100
             )
+        }
+
+        galleryButton.setOnClickListener {
+
+            openGallery()
         }
 
         photoButton.setOnClickListener {
@@ -426,6 +435,30 @@ class MainActivity : AppCompatActivity() {
                     ).show()
                 }
             }
+        }
+    }
+
+    private fun openGallery() {
+
+        val galleryIntent = Intent(
+            Intent.ACTION_VIEW,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        ).apply {
+
+            type = "image/*"
+        }
+
+        try {
+
+            startActivity(galleryIntent)
+
+        } catch (exception: ActivityNotFoundException) {
+
+            Toast.makeText(
+                this,
+                "No gallery app found on this device",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
